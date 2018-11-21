@@ -32,6 +32,10 @@ app.post('/article/create', function(request, response){
                 .json({message: "Article successfully created"});
 });
 
+app.get('/article/list', function(request, response){
+  return response.status(200).json({articles: article});
+})
+
 server.listen(process.env.PORT || 3000, process.env.IP || 'localhost', function(){
   console.log('Server running');
 });

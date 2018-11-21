@@ -9,6 +9,7 @@
     <input type="text" id="title" placeholder="Title"><br/><br/>
     <textarea id="content" placeholder="Content"></textarea><br/>
     <button id="submit">Submit</button>
+    <button id="getArticles">Get all articles</button>
     <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -28,6 +29,18 @@
           console.log(response.responseText);
         });
       });
+
+      $('#getArticles').click(function(event){
+        $.ajax({
+          method:"GET",
+          url:"/article/list"
+        }).done(function(response){
+          console.log(response);
+        }).fail(function(response){
+          console.log(response.responseText);
+        });
+      });
+
     </script>
   </body>
 </html>
