@@ -4,8 +4,6 @@ var app = express();
 var server = http.Server(app);
 var bodyParser = require('body-parser');
 
-//var mongo = require('mongodb');
-
 //for c9
 var db;
 //var db_url = "mongodb://"+process.env.IP+":27017"
@@ -19,85 +17,18 @@ mongoose.connection.on('error', function(err){
   console.log('Could not connect to mongodb');
 })
 
-var Schema = mongoose.Schema;
-
-var articleSchema = new Schema({
-  title: {
-    type: String,
-    required: "Title required"
-  },
-  content: {
-    type: String
-  }
-});
-
-var Article = mongoose.model('Article', articleSchema)
-
-// mongo.MongoClient.connect(db_url,
-//   {useNewUrlParser:true}, function(err, client){
-//     if(err){
-//       console.log('Could not connect to MongoDB');
-//     }else{
-//       db = client.db('node-cw9');
-//     }
-//   })
-
-// var save = function(form_data){
-//   db.createCollection('articles', function(err, collection){
-//
-//   });
-//   form_data.test = "sasfs";
-//   var collection = db.collection('articles');
-//   collection.save(form_data);
-// }
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.get('/', function(request, response){
-  response.sendFile(__dirname+'/index.html');
+  response.render('index.ejs');
 });
 
 app.get('/about-page', function(request, response){
-  response.sendFile(__dirname+'/about.html');
+  response.render('about.ejs');
 });
 
-app.get('/new-article', function(request, response){
-  response.sendFile(__dirname+'/form.html');
-});
-
-var article = [];
-
-app.post('/article/create', function(request, response){
-  var new_article = new Article(request.body);
-  new_article.save(function(err, data){
-    if(err)
-      return response.status(400)
-                    .json({error: "Please add a title"});
-    console.log(data);
-    return response.status(200)
-                    .json({message: "Article successfully created"});
-
-  })
-
-  console.log(request.body);
-  // article.push(request.body);
-  //save(request.body)
-});
-
-app.get('/article/list', function(request, response){
-  return response.status(200).json({articles: article});
-})
-
-article.push({title:"Test article 1", content:"content 1"});
-article.push({title:"Test article 2", content:"content 2"});
-
-app.get('/article/:articleID', function(request, response){
-  response.render('../article.ejs', {
-    article:article[request.params.articleID]
-  })
-});
-
+require('./routes/article-routes.js')(app);
 server.listen(process.env.PORT || 3000, process.env.IP || 'localhost', function(){
   console.log('Server running');
 });
